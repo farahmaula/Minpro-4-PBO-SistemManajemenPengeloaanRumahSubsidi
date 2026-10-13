@@ -18,6 +18,7 @@ Jika memilih no 1 pada menu utama akan masuk ke dalam manajemen data rumah. Admi
 <img width="763" height="316" alt="image" src="https://github.com/user-attachments/assets/85e64eda-1d5c-494b-8089-6e76d0d6f87a" />
 
 Apabila ingin mengubah data rumah subsidi yang sudah ada bisa menggunakan menu 3 yaitu ubah rumah dengan memasukkan id rumah lalu dapat mengubah unit, tipe rumah, dan harga. 
+
 <img width="614" height="590" alt="image" src="https://github.com/user-attachments/assets/1e4c0f81-51ee-43fb-8e97-d74a3e289316" />
 
 <img width="593" height="569" alt="image" src="https://github.com/user-attachments/assets/ebc7b930-2760-4105-9fc3-412a054e2786" />
