@@ -227,3 +227,5 @@ Pada struktur ini implements dapatsurvey menunjukkan penerapan interface. RumahT
 <img width="936" height="335" alt="image" src="https://github.com/user-attachments/assets/0ff9069c-08b3-448b-9d03-41e0e0440cf1" />
 
 Ini adalah salah satu output dari penggunaan interface pada sistem ini.
+
+# Penerapan JDBC
