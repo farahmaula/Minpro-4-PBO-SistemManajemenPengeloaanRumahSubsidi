@@ -36,6 +36,7 @@ Pada menu pembeli ini isi menu sama dengan menu rumah yang sebelumnya dijelaskan
 <img width="808" height="242" alt="image" src="https://github.com/user-attachments/assets/9b066d73-a7ca-4d48-86d8-3c460841592a" />
 
 Apabila ingin mengubah data pembeli yang sudah ada bisa menggunakan menu 3 yaitu ubah pembeli dengan memasukkan NIK lalu dapat mengubah penghasilan dan no hp pembeli. 
+
 <img width="608" height="503" alt="image" src="https://github.com/user-attachments/assets/6c43b97a-573c-45df-acb4-0adc51044293" />
 
 <img width="616" height="525" alt="image" src="https://github.com/user-attachments/assets/188cd2ba-264d-4dd7-93ed-c513585e62f5" />
