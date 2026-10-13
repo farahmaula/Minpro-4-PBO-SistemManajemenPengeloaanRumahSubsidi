@@ -73,6 +73,7 @@ Menu 3 yaitu proses pengajuan merupakan proses dimana dapat melakukan verifikasi
 <img width="598" height="597" alt="image" src="https://github.com/user-attachments/assets/4c4636f2-f48c-4985-99e8-c792e7e082ac" />
 
 Menu 4 yaitu pembayaran dimana proses ini melakukan pembayaran rumah subsidi setelah proses pengajuan pembelian sudah disetujui. Dengan memasukkan id pengajuan lalu ada 2 cara yang bisa dipilih untuk pembayaran yaitu secara cash atau cicilan. Untuk pembayaran cash langsunng dengan memasukkan nominal pembayaran yang sesuai dengan harga rumah yang dibeli. Sementara itu untuk pembayaran cicilan, sistem menghitung jumlah cicilan berdasarkan 30% dari penghasilan pembeli. Dibawah ini adalah output dari kedua metode pembayaran.
+
 <img width="675" height="389" alt="image" src="https://github.com/user-attachments/assets/702dd3e7-548f-41d6-a023-c96c9ca35884" />
 <img width="701" height="328" alt="image" src="https://github.com/user-attachments/assets/059b38f8-06be-44fc-a9b1-ac759969152b" />
 
