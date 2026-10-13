@@ -5,7 +5,7 @@ Nama  : Farah Hikmatul Maula
 NIM  : 2509116099
 
 # Deskripsi Singkat Program
-Sistem manajemen rumah suubsidi dibuat untuk administrasi dalam mengelola pendataan rumah subsidi, data pembeli, pengajuan rumah subsidi sampai dengan proses pembayaran. Fungsi dan kegunaan program yang saya buat ini untuk mengelola informasi atau data dari rumah subsidi, data pribadi pembeli, dan proses pengajuan hingga pembayaran saat rumah subsidi dibeli. Sistem ini ditujukan untuk bagian administrasi atau admin. Terdapat 4 package dalam sistem saya. Pertama package main terdapat class main.java yang digunakan sebagai class utama untuk menjalankan program yang sudah dibuat. Kedua package model terdapat class rumah, pembeli, dokumen, pengajuan dan terdapat dua class tambahan dari inheritance yaitu rumah terjual dan rumah tersedia. Isi dari package ini adalah tempat atribut yang nantinya akan diisi jika program dijalankan. Ketiga package controller sebelum ini namanya adalah package crud tetapi karena saya menerapkan mvc maka diganti namanya menjadi controller. Terdapat class manajemen data dan validasi input didalamnya. Class manajemen data digunakan sebagai tempat untuk mengelola data dari package model dan lainnnya istilahnya sebagai tempat bermain utama dari sistem ini. Class validasi input digunakan untuk memeriksa data yang dimasukkan agar sesuai dengan aturan. Keempat package view yang terdapat class sistem view digunakan untuk mnampilkan data kepada user interface view ini juga berhubungan dengan penerapan mvc.
+Sistem manajemen rumah subsidi dibuat untuk administrasi dalam mengelola pendataan rumah subsidi, data pembeli, pengajuan rumah subsidi sampai dengan proses pembayaran. Fungsi dan kegunaan program yang saya buat ini untuk mengelola informasi atau data dari rumah subsidi, data pribadi pembeli, dan proses pengajuan hingga pembayaran saat rumah subsidi dibeli. Sistem ini ditujukan untuk bagian administrasi atau admin. Terdapat 4 package dalam sistem saya. Pertama package main terdapat class main.java yang digunakan sebagai class utama untuk menjalankan program yang sudah dibuat. Kedua package model terdapat class rumah, pembeli, dokumen, pengajuan dan terdapat dua class tambahan dari inheritance yaitu rumah terjual dan rumah tersedia. Isi dari package ini adalah tempat atribut yang nantinya akan diisi jika program dijalankan. Ketiga package controller sebelum ini namanya adalah package crud tetapi karena saya menerapkan mvc maka diganti namanya menjadi controller. Terdapat class manajemen data dan validasi input didalamnya. Class manajemen data digunakan sebagai tempat untuk mengelola data dari package model dan lainnnya istilahnya sebagai tempat bermain utama dari sistem ini. Class validasi input digunakan untuk memeriksa data yang dimasukkan agar sesuai dengan aturan. Keempat package view yang terdapat class sistem view digunakan untuk mnampilkan data kepada user interface view ini juga berhubungan dengan penerapan mvc.
 
 # Alur Program
 Program utama dijalankan di package main. Class manajemen data digunakan untuk mengatur semua proses pengolahan data dan juga berperan sebagai controller karena controller tugasnya memang menerima input dari pengguna, memproses, meminta data yang diperlukan ke model, lalu mengirimkan hasilnya kembali ke View untuk ditampilkan. Saat sistem dijalankan terdapat lagi menu utama dari sistem manajemen pengelolaan rumah subsidi seperti pada gambar dibawah ini.
@@ -229,3 +229,19 @@ Pada struktur ini implements dapatsurvey menunjukkan penerapan interface. RumahT
 Ini adalah salah satu output dari penggunaan interface pada sistem ini.
 
 # Penerapan JDBC
+
+Pada sistem ini saya menerapkan JDBC atau menghubungkan program java dengan database sehingga data tersimpan secara permanen di dalam database walaupun program dimatikan dan jalankan ulang. Saya membuat package baru dengan nama config yang class nya digunakan untuk menghubungkan sistem ke database. Dibawah ini adalah penerapannya. 
+
+<img width="546" height="152" alt="image" src="https://github.com/user-attachments/assets/1e10e589-b671-441f-8b14-35d90ff3d0a4" />
+
+<img width="1247" height="668" alt="image" src="https://github.com/user-attachments/assets/6e5266f6-66eb-4a7a-a38b-73b93d5af0eb" />
+Di class koneksi digunakan untuk menghubungkan aplikasi ke database MySQL. Terdapat URL, user, dan password yang terhubung ke phpmyadmin tempat databasenya berada. 
+
+<img width="1028" height="754" alt="image" src="https://github.com/user-attachments/assets/6b4c43ef-1d7f-4781-a430-8a781eab1e17" />
+Class TesKoneksi digunakan untuk menguji apakah sistem berhasil terhubung ke database MySQL rumah_subsidi sekaligus memeriksa apakah data rumah dapat dibaca melalui JDBC. Class ini berfungsi sebagai program pengujian.
+
+<img width="1537" height="620" alt="image" src="https://github.com/user-attachments/assets/549478e0-fab3-4b81-aa8c-1d834d3b2e7b" />
+Gambar diatas adalah database yang saya buat pada mysql di laragon dengan isinya ada table rumah, pembeli, dokumen, dan pengajuan. Saya juga menambahkan 2 data pada masing masing tabelnya di database.
+
+<img width="1534" height="592" alt="image" src="https://github.com/user-attachments/assets/1b83a39f-4853-4ad6-8a87-7bcb13d4caca" />
+di class project file saya menambahkan dependencies agar database bisa terkoneksi dengan program saya dan koneksi bisa berhasil dilakukan seperti pada gambar diatas. Kemudian lakukan percobaan dengan run di class tes koneksi jika sudah berhasil maka akan muncul koneksi database berhasil.  
