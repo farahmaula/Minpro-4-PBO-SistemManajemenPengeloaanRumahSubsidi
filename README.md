@@ -211,7 +211,7 @@ Dibawah ini adalah hasil dari penggunaan abstract.
 <img width="807" height="268" alt="image" src="https://github.com/user-attachments/assets/aa8ee970-c101-43bd-ac10-b1e18f16428d" />
 
 
-# Penerapan Nilai Tambah (Interface)
+**3. Penerapan Interface**
 
 Saya menerapkan interface pada sistem ini dengan menambah class dapatsurvey sebagai interface dan memberikan method atau kemampuan survey rumah pada class rumahtersedia. Dibawah ini adalah penerapan interface berdasarkan sistem yang saya buat.
 <img width="1307" height="116" alt="image" src="https://github.com/user-attachments/assets/d497ae54-c335-4418-b015-691bdac2d590" />
