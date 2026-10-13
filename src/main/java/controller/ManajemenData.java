@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
 import java.util.ArrayList;
@@ -13,6 +9,10 @@ import model.Pembeli;
 import model.Pengajuan;
 import model.Dokumen;
 import model.DapatSurvey;
+import dao.RumahDAO;
+import dao.PembeliDAO;
+import dao.DokumenDAO;
+import dao.PengajuanDAO;
 
 /**
  *
@@ -22,41 +22,20 @@ public class ManajemenData {
     Scanner input = new Scanner(System.in);
     private ValidasiInput validasi = new ValidasiInput();
     private ArrayList<Rumah> daftarRumah = new ArrayList<>();
+    private RumahDAO rumahDAO = new RumahDAO();
     private ArrayList<Pembeli> daftarPembeli = new ArrayList<>();
+    private final PembeliDAO pembeliDAO = new PembeliDAO();
     private ArrayList<Pengajuan> daftarPengajuan = new ArrayList<>();
+    private final PengajuanDAO pengajuanDAO = new PengajuanDAO();
     private ArrayList<Dokumen> daftarDokumen = new ArrayList<>();
+    private final DokumenDAO dokumenDAO = new DokumenDAO();
     
     public ManajemenData() {
-        RumahTersedia rumahDummy = new RumahTersedia(
-                "R001", 
-                "A01", 
-                "3x6", 
-                150000000,
-                8,
-                "Blok Lily");
-            daftarRumah.add(rumahDummy);
-        
-        Pembeli pembeliDummy = new Pembeli(
-                "6472056767280002", 
-                "Anggita Melastri", 
-                5000000, 
-                "085612789355", 
-                "Tidak");
-            daftarPembeli.add(pembeliDummy);
-      
-        Pengajuan pengajuanDummy = new Pengajuan(
-                "P001", 
-                "6472056767280002", 
-                "R101", 
-                "Menunggu Verifikasi");
-            daftarPengajuan.add(pengajuanDummy);
-            
-        Dokumen dokumenDummy = new Dokumen(
-                "D001", 
-                "6472056767280002", 
-                "KTP", 
-                "Terverifikasi");
-            daftarDokumen.add(dokumenDummy);
+        // Mengambil data rumah dari database melalui DAO
+        daftarRumah.addAll(rumahDAO.getSemuaRumah());
+        daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+        daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
+        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
 
 }
 
@@ -161,13 +140,18 @@ public class ManajemenData {
         }
         
         // Polymorphic Collection: ArrayList bertipe Superclass (Rumah)
-        Rumah rumahBaru = new RumahTersedia(id, unit, tipe, harga, jumlahUnit, blokRumah);
-        daftarRumah.add(rumahBaru);
-
-        System.out.println("Rumah subsidi berhasil ditambahkan.");
+        RumahTersedia rumahBaru = new RumahTersedia(id, unit, tipe, harga, jumlahUnit, blokRumah);
+        if (rumahDAO.tambahRumah(rumahBaru)) {
+            daftarRumah.add(rumahBaru);
+            System.out.println("Rumah subsidi berhasil ditambahkan.");
+        }else{
+            System.out.println("Gagal menambahkan rumah.");
+        }
     }
 
     public void tampilRumah() {
+        daftarRumah.clear();
+        daftarRumah.addAll(rumahDAO.getSemuaRumah());
         System.out.println("\nDAFTAR RUMAH");
         if (daftarRumah.isEmpty()) {
             System.out.println("Data rumah masih kosong.");
@@ -221,10 +205,22 @@ public class ManajemenData {
                 System.out.print("Harga Baru: ");
                 double harga = validasi.bacaDoublePositif(input);
 
-                rumah.setUnit(unit);
-                rumah.setTipeRumah(tipe);
-                rumah.setHarga(harga);
-                System.out.println("Data rumah berhasil diubah.");
+                if (!(rumah instanceof RumahTersedia)) {
+                    System.out.println("Rumah tidak berstatus tersedia.");
+                    return;
+                }
+
+                RumahTersedia rumahTersedia = (RumahTersedia) rumah;
+
+                RumahTersedia rumahBaru = new RumahTersedia(id, unit, tipe, harga, rumahTersedia.getJumlahUnit(), rumahTersedia.getBlokRumah());
+
+                if (rumahDAO.ubahRumah(rumahBaru)) {
+                    daftarRumah.clear();
+                    daftarRumah.addAll(rumahDAO.getSemuaRumah());
+                     System.out.println("Data rumah berhasil diubah.");
+                } else {
+                    System.out.println("Gagal mengubah data rumah.");
+                }
                 return;
             }
         }
@@ -241,14 +237,14 @@ public class ManajemenData {
             return;
         }
 
-        for (int i = 0; i < daftarRumah.size(); i++) {
-            if (daftarRumah.get(i).getIdRumah().equalsIgnoreCase(id)) {
-                daftarRumah.remove(i);
-                System.out.println("Data rumah berhasil dihapus.");
-                return;
-            }
+        if (rumahDAO.hapusRumah(id)) {
+            daftarRumah.clear();
+            daftarRumah.addAll(rumahDAO.getSemuaRumah());
+            System.out.println("Data rumah berhasil dihapus.");
+        } else {
+        System.out.println(
+            "Gagal menghapus rumah. Pastikan ID Rumah benar ");
         }
-        System.out.println("ID Rumah tidak ditemukan.");
     }
     
     // MENU Pembeli
@@ -351,11 +347,18 @@ public class ManajemenData {
         }
 
         Pembeli pembeliBaru = new Pembeli(nik, nama, penghasilan, noHP, statusRumah);
-        daftarPembeli.add(pembeliBaru);
-        System.out.println("Pembeli berhasil ditambahkan.");
+        if (pembeliDAO.tambahPembeli(pembeliBaru)) {
+            daftarPembeli.clear();
+            daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+            System.out.println("Pembeli berhasil ditambahkan.");
+        } else {
+            System.out.println("Gagal menambahkan pembeli ke database.");
+        }
     }
 
     public void tampilPembeli() {
+        daftarPembeli.clear();
+        daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
         System.out.println("\nDAFTAR PEMBELI");
         
         if (daftarPembeli.isEmpty()) {
@@ -396,9 +399,15 @@ public class ManajemenData {
                     return;
                 }
                 
-                pembeli.setPenghasilan(penghasilan);
-                pembeli.setNoHP(noHP);
-                System.out.println("Data pembeli berhasil diubah.");
+                Pembeli pembeliBaru = new Pembeli(nik, pembeli.getNama(), penghasilan, noHP, pembeli.getStatusPunyaRumah());
+
+                if (pembeliDAO.ubahPembeli(pembeliBaru)) {
+                    daftarPembeli.clear();
+                    daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+                    System.out.println("Data pembeli berhasil diubah.");
+                } else {
+                    System.out.println("Gagal mengubah data pembeli.");
+                }
                 return;
             }
         }
@@ -415,14 +424,13 @@ public class ManajemenData {
             return;
         }
 
-        for (int i = 0; i < daftarPembeli.size(); i++) {
-            if (daftarPembeli.get(i).getNik().equals(nik)) {
-                daftarPembeli.remove(i);
-                System.out.println("Data pembeli berhasil dihapus.");
-                return;
-            }
+        if (pembeliDAO.hapusPembeli(nik)) {
+            daftarPembeli.clear();
+            daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+            System.out.println("Data pembeli berhasil dihapus.");
+        } else {
+            System.out.println("Gagal menghapus pembeli. NIK tidak ditemukan ");
         }
-        System.out.println("NIK tidak ditemukan.");
     }
 
     // MENU pengajuan
@@ -472,6 +480,11 @@ public class ManajemenData {
     }
 
     public void tambahPengajuan() {
+        daftarPembeli.clear();
+        daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+        
+        daftarRumah.clear();
+        daftarRumah.addAll(rumahDAO.getSemuaRumah());
         System.out.println("Contoh : P000");
         System.out.println("=======================\n");
         System.out.print("ID Pengajuan: ");
@@ -540,12 +553,17 @@ public class ManajemenData {
         }
 
         Pengajuan pengajuanBaru = new Pengajuan(idPengajuan, nik, idRumah, "Menunggu Verifikasi");
-        daftarPengajuan.add(pengajuanBaru);
-        System.out.println("Pengajuan berhasil dibuat.");
-        System.out.println("Status: Menunggu Verifikasi");
+        if (pengajuanDAO.tambahPengajuan(pengajuanBaru)) {
+            daftarPengajuan.clear();
+            daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+            System.out.println("Pengajuan berhasil ditambahkan.");
+            System.out.println("Status: Menunggu Verifikasi");
+        }
     }
 
     public void tampilPengajuan() {
+        daftarPengajuan.clear();
+        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
         if (daftarPengajuan.isEmpty()) {
             System.out.println("Data pembayaran masih kosong.");
             return;
@@ -559,6 +577,14 @@ public class ManajemenData {
     }
 
     public void prosesPengajuan() {
+        daftarPengajuan.clear();
+        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+
+        daftarPembeli.clear();
+        daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+
+        daftarDokumen.clear();
+        daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
         System.out.println("Contoh ID Pengajuan : P000");
         System.out.println("=======================\n");
         System.out.print("Masukkan ID Pengajuan: ");
@@ -598,24 +624,28 @@ public class ManajemenData {
 
                 if (pembeliDipilih.getPenghasilan() < 2000000) {
                     pengajuan.setStatusPengajuan("Ditolak");
+                    if (pengajuanDAO.ubahPengajuan(pengajuan)) {
+                        daftarPengajuan.clear();
+                        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
 
-                    System.out.println("Pengajuan DITOLAK.");
-                    System.out.println(
-                            "Penghasilan pembeli kurang dari Rp2.000.000.");
-                    System.out.println(
-                            "Penghasilan belum memadai untuk pengajuan.");
-                    return;
+                        System.out.println("Pengajuan DITOLAK.");
+                        System.out.println("Penghasilan pembeli kurang dari Rp2.000.000.");
+                        System.out.println("Penghasilan belum memadai untuk pengajuan.");
+                        return;
+                    }
                 }
 
                 if (pembeliDipilih.getStatusPunyaRumah()
                         .equalsIgnoreCase("Ya")) {
 
                     pengajuan.setStatusPengajuan("Ditolak");
-
-                    System.out.println("Pengajuan DITOLAK.");
-                    System.out.println(
-                            "Pembeli sudah memiliki rumah.");
-                    return;
+                    if (pengajuanDAO.ubahPengajuan(pengajuan)) {
+                        daftarPengajuan.clear();
+                        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+                        System.out.println("Pengajuan DITOLAK.");
+                        System.out.println("Pembeli sudah memiliki rumah.");
+                        return;
+                    }      
                 }
 
                 boolean ktp = false;
@@ -641,6 +671,10 @@ public class ManajemenData {
                 }
 
                 pengajuan.setStatusPengajuan("Disetujui");
+                if (pengajuanDAO.ubahPengajuan(pengajuan)) {
+                    daftarPengajuan.clear();
+                    daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+                    }
 
                 System.out.println("\nPengajuan DISETUJUI.");
                 System.out.println(
@@ -651,7 +685,15 @@ public class ManajemenData {
         System.out.println("ID Pengajuan tidak ditemukan.");
     }
     
-    public void pembayaran() {
+public void pembayaran() {
+        daftarPengajuan.clear();
+        daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+
+        daftarPembeli.clear();
+        daftarPembeli.addAll(pembeliDAO.getSemuaPembeli());
+
+        daftarRumah.clear();
+        daftarRumah.addAll(rumahDAO.getSemuaRumah());
         System.out.println("Contoh ID Pengajuan : P000");
         System.out.println("=======================\n");
         System.out.print("Masukkan ID Pengajuan: ");
@@ -662,6 +704,8 @@ public class ManajemenData {
         }
 
         boolean ditemukanPengajuan = false;
+        int pilihan = 0; // Dideklarasikan di sini agar hierarki bawah tetap bisa mengaksesnya
+        
         for (Pengajuan pengajuan : daftarPengajuan) {
             if (pengajuan.getIdPengajuan().equalsIgnoreCase(id)) {
                 ditemukanPengajuan = true;
@@ -704,7 +748,7 @@ public class ManajemenData {
                 System.out.println("1. Cash");
                 System.out.println("2. Cicilan");
                 System.out.print("Pilih: ");
-                int pilihan = validasi.bacaPilihan(input, 1, 2);
+                pilihan = validasi.bacaPilihan(input, 1, 2);
 
 
                 if (pilihan == 1) {
@@ -739,37 +783,60 @@ public class ManajemenData {
                     System.out.println("Penghasilan Pembeli : Rp. " + pembeliDipilih.getPenghasilan());
                     System.out.println("Persentase Cicilan  : 30%");
                     System.out.println("Cicilan Per Bulan   : Rp. " +  cicilan);
-
                 }
-                else {
-                    System.out.println("Pilihan metode pembayaran tidak valid.");
-                }
-                
-                System.out.println("\n=== DATA PENJUALAN RUMAH ===");
-                System.out.println("Contoh tanggal: 21 Juni 2030");
-                System.out.print("Tanggal Jual: ");
-                String tanggalJual = input.nextLine();
-
-                if (tanggalJual.trim().isEmpty()) {
-                    System.out.println("Tanggal jual tidak boleh kosong.");
+                 // Simpan pembayaran ke database
+                if (!pengajuanDAO.ubahPengajuan(pengajuan)) {
+                    System.out.println("Gagal menyimpan pembayaran ke database.");
                     return;
                 }
-                
-                boolean ditemukan = false;
-                for (int i = 0; i < daftarRumah.size(); i++) {
-                    Rumah rumah = daftarRumah.get(i);
 
-                    if (rumah.getIdRumah().equalsIgnoreCase(pengajuan.getIdRumah())) {
+                daftarPengajuan.clear();
+                daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+                System.out.println("\nPembayaran berhasil disimpan ke database.");
+            
+                // Tanggal jual hanya diminta satu kali untuk pembayaran Cash (Hierarki asli dipertahankan)
+                if (pilihan == 1) {
+                    System.out.println("\n=== DATA PENJUALAN RUMAH ===");
+                    System.out.println("Contoh tanggal: 21 Juni 2030");
+                    System.out.print("Tanggal Jual: ");
+                    String tanggalJual = input.nextLine();
                 
-                        RumahTerjual rumahLaku = new RumahTerjual(rumah.getIdRumah(), rumah.getUnit(), rumah.getTipeRumah(), rumah.getHarga(), tanggalJual);
-                        daftarRumah.set(i, rumahLaku);
-                        System.out.println("Rumah Telah TERJUAL.");
-                        ditemukan = true;
-                        break;
+                    if (tanggalJual.trim().isEmpty()) {
+                        System.out.println("Tanggal jual tidak boleh kosong.");
+                        return;
+                    }
+                
+                    java.sql.Date tanggal;
+                
+                    try {
+                        java.time.format.DateTimeFormatter formatter
+                            = java.time.format.DateTimeFormatter.ofPattern(
+                                    "d MMMM yyyy",
+                                    new java.util.Locale("id", "ID"));
+
+                        java.time.LocalDate localDate
+                            = java.time.LocalDate.parse(tanggalJual, formatter);
+
+                        tanggal = java.sql.Date.valueOf(localDate);
+
+                    } catch (java.time.format.DateTimeParseException e) {
+                        System.out.println("Format tanggal salah. Contoh: 21 Juni 2030");
+                        return;
+                    }
+                
+                    // Tandai rumah terjual
+                    if (rumahDAO.tandaiRumahTerjual(pengajuan.getIdRumah(), tanggal.toString())) {
+                        daftarRumah.clear();
+                        daftarRumah.addAll(rumahDAO.getSemuaRumah());
+                        System.out.println("Rumah telah TERJUAL.");
+                    } else {
+                        System.out.println("Pembayaran tersimpan, tetapi status rumah gagal diperbarui.");
                     }
                 }
+                return;
             }
         }
+        
         if (!ditemukanPengajuan) {
             System.out.println("ID Pengajuan tidak ditemukan.");
         }
@@ -784,15 +851,11 @@ public class ManajemenData {
             System.out.println("Sesuaikan Format ID Dokumen Seperti Contoh");
             return;
         }
-
-        for (int i = 0; i < daftarPengajuan.size(); i++) {
-            if (daftarPengajuan.get(i).getIdPengajuan().equalsIgnoreCase(id)) {
-                daftarPengajuan.remove(i);
-                System.out.println("Pengajuan berhasil dihapus.");
-                return;
-            }
+        if (pengajuanDAO.hapusPengajuan(id)) {
+            daftarPengajuan.clear();
+            daftarPengajuan.addAll(pengajuanDAO.getSemuaPengajuan());
+            System.out.println("Pengajuan berhasil dihapus.");
         }
-        System.out.println("ID Pengajuan tidak ditemukan.");
     }
 
     // MENU Dokumen
@@ -897,11 +960,20 @@ public class ManajemenData {
         }
 
         Dokumen dokumenBaru = new Dokumen(id, nik, jenis, "Belum Terverifikasi");
-        daftarDokumen.add(dokumenBaru);
-        System.out.println("Dokumen berhasil ditambahkan.");
+        if (dokumenDAO.tambahDokumen(dokumenBaru)) {
+            daftarDokumen.clear();
+            daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
+            System.out.println("Dokumen berhasil ditambahkan.");
+        } else {
+            System.out.println("Gagal menambahkan dokumen. Pastikan NIK pembeli sudah terdaftar dan ID dokumen belum digunakan.");
+        }
     }
 
     public void tampilDokumen() {
+        daftarDokumen.clear();
+        daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
+
+        System.out.println("\n=== DAFTAR DOKUMEN ===");
         if (daftarDokumen.isEmpty()) {
             System.out.println("Data dokumen masih kosong.");
             return;
@@ -915,6 +987,9 @@ public class ManajemenData {
     }
 
     public void verifikasiDokumen() {
+        daftarDokumen.clear();
+        daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
+
         System.out.println("Contoh ID Dokumen : D000");
         System.out.println("=======================\n");
         System.out.print("Masukkan ID Dokumen: ");
@@ -927,8 +1002,12 @@ public class ManajemenData {
         for (Dokumen dokumen : daftarDokumen) {
             if (dokumen.getIdDokumen().equalsIgnoreCase(id)) {
                 dokumen.setStatusVerifikasi("Terverifikasi");
-                System.out.println("Dokumen berhasil diverifikasi.");
-                return;
+                if (dokumenDAO.ubahDokumen(dokumen)) {
+                    daftarDokumen.clear();
+                    daftarDokumen.addAll( dokumenDAO.getSemuaDokumen());
+                    System.out.println("Dokumen berhasil diverifikasi.");
+                    return;
+                }
             }
         }
         System.out.println("ID Dokumen tidak ditemukan.");
@@ -945,13 +1024,12 @@ public class ManajemenData {
         }
 
         for (int i = 0; i < daftarDokumen.size(); i++) {
-            if (daftarDokumen.get(i).getIdDokumen().equalsIgnoreCase(id)) {
-                daftarDokumen.remove(i);
+            if (dokumenDAO.hapusDokumen(id)) {
+                daftarDokumen.clear();
+                daftarDokumen.addAll(dokumenDAO.getSemuaDokumen());
                 System.out.println("Dokumen berhasil dihapus.");
-                return;
             }
         }
-        System.out.println("ID Dokumen tidak ditemukan.");
     }
     
     public ArrayList<Rumah> getDaftarRumah(){
@@ -969,6 +1047,4 @@ public class ManajemenData {
     public ArrayList<Dokumen> getDaftarDokumen(){
         return daftarDokumen;
     }
-
-
 }
