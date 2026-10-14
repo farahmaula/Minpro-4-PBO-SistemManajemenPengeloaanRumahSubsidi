@@ -244,7 +244,7 @@ Class TesKoneksi digunakan untuk menguji apakah sistem berhasil terhubung ke dat
 Gambar diatas adalah database yang saya buat pada mysql di laragon dengan isinya ada table rumah, pembeli, dokumen, dan pengajuan. Saya juga menambahkan 2 data pada masing masing tabelnya di database.
 
 <img width="1534" height="592" alt="image" src="https://github.com/user-attachments/assets/1b83a39f-4853-4ad6-8a87-7bcb13d4caca" />
-di class project file saya menambahkan dependencies agar database bisa terkoneksi dengan program saya dan koneksi bisa berhasil dilakukan seperti pada gambar diatas. Kemudian lakukan percobaan dengan run di class tes koneksi jika sudah berhasil maka akan muncul koneksi database berhasil.  
+di class project file saya menambahkan dependencies agar database bisa terkoneksi dengan program saya dan koneksi bisa berhasil dilakukan seperti pada gambar diatas. Kemudian lakukan percobaan dengan run di class tes koneksi jika sudah berhasil maka akan muncul koneksi database berhasil.
 
 
 <img width="624" height="512" alt="image" src="https://github.com/user-attachments/assets/38d1acf2-48fe-494b-8f1b-2a731ea8b69d" />
